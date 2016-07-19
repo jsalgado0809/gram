@@ -1,0 +1,47 @@
+
+#canvasBg2{
+	display:block;  
+	background:#ffffff; 
+	margin:100px auto 0px; 	
+}
+
+#canvasBg1, #canvasAnimal{
+	display:block; 
+	margin:-300px auto 0px;		
+}
+
+#canvasPuntaje{
+	display:block; 
+	margin:-375px auto 0px;		
+}
+
+#canvasInicial{
+	display:block; 
+	margin:-401px auto 0px;		
+}
+
+#canvasJugar{
+	display:block; 
+	margin:-401px auto 0px;
+}
+
+#canvasFinal, #canvasAlbum{
+	display:none; 
+	margin:-401px auto 0px;		
+}
+
+#canvasFotos{
+	display:block; 
+	background:rgba(153, 153, 153, 0.5);
+	margin:1px auto 0px; 
+}
+
+#canvasMouse{
+	display:block; 
+	margin:-300px auto 0px;	
+}
+
+
+#canvasOculto{
+	display: none;
+}

@@ -1,0 +1,40 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Virtual World Kids</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script id="principal" type="application/javascript" src="js/game0.js"></script>
+	 <link type="image/x-icon" href="images/favicon.ico" rel="icon" />
+ <link type="image/x-icon" href="images/favicon.ico" rel="shortcut icon" />
+ 
+</head>
+<script type="text/javascript">
+function cambio(){
+var str= document.getElementById("principal");
+str.src="js/game41.js";
+alert(str.src);
+str.reload();
+}
+</script>
+<body>
+<p align ="center"><img src="images/title.png" onClick="cambio();"></p>
+	<div id="page-wrap">
+	
+		<form method="post" action="contactengine.php" id="commentForm">
+			<fieldset  valign="center">
+			<p><canvas id="canvas" width="650" height="300" style="background:#999">
+Canvas not supported by your browser.
+</canvas></p>
+			</fieldset>
+		</form>
+	
+	</div>
+	
+
+
+
+</body>
+
+</html>

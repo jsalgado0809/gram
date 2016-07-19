@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Virtual World Kids</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	
+	<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="js/jquery.validate.js"></script>
+	 <script type="text/javascript">
+	var cancho = 650;
+	var calto = 300;
+	var ctx;
+	var primeracoincidencia = true;
+	var primeracarta = -1;
+	var segundacarta;
+	//var colordorso = "rgb(0,128,128)";
+	var colordorso="royalblue";
+	var colormesa = "red";
+	var baraja = [];
+	var primersx = 30;
+	var primersy = 50;
+	var margin = 20;
+	var anchocarta = 100;
+	var altocarta = 50;
+	var tid;
+	var coincide;
+	var tiempoinicio;
+	var contador = 0;
+	var pares = [
+		["assets/billetes/frente1Lmp.jpg","assets/billetes/reves1Lmp.jpg"],
+	   	[ "assets/billetes/frente2Lmp.jpg","assets/billetes/reves2Lmp.jpg"],
+	  	["assets/billetes/frente5Lmp.jpg","assets/billetes/reves5Lmp.jpg"],
+	   	["assets/billetes/frente10Lmp.jpg","assets/billetes/reves10Lmp.jpg"],
+	   	["assets/billetes/frente20Lmp.jpg","assets/billetes/reves20Lmp.jpg"],
+	  	["assets/billetes/frente50Lmp.jpg", "assets/billetes/reves50Lmp.jpg"],
+		["assets/billetes/frente100Lmp.jpg", "assets/billetes/reves100Lmp.jpg"],
+		["assets/billetes/frente500Lmp.jpg", "assets/billetes/reves500Lmp.jpg"]
+	  ]  
+//baraja guarda info en las cartas: la localización y dimensiones, el src para la foto
+//y la info de identificación
+//la info es configurada usando el array de arrays en la función hacerbaraja
+
+function Carta(sx,sy,sancho,salto, img, info) {
+	this.sx = sx;
+	this.sy = sy;
+	this.sancho = sancho;
+	this.salto = salto;
+	this.info = info;
+	this.img = img;
+	this.dibujar = dibujardorso;
+}
+
+//genera baraja de cartas 6 pares de polígonos
+function hacerbaraja() {
+	var i;
+	var cartaa;
+	var cartab;
+	var elecciona;
+	var eleccionb;
+	var cx = primersx;
+	var cy = primersy;
+	for(i=0;i<pares.length;i++) {
+		
+		
+		while(i<=4){
+		elecciona = new Image();
+		elecciona.src = pares[i][0];
+		cartaa = new Carta(cx,cy,anchocarta,altocarta,elecciona,i);
+		baraja.push(cartaa);
+		eleccionb = new Image();
+		eleccionb.src = pares[i][1];		
+		cartab = new Carta(cx,cy+altocarta+margin,anchocarta,altocarta,eleccionb,i);
+		baraja.push(cartab);
+		cx = cx+anchocarta+ margin;
+		cartaa.dibujar();
+		cartab.dibujar();
+		i=i+1;
+		}
+
+		
+		
+		
+		
+				
+			
+		
+	}
+	
+}
+
+function barajar() {
+
+//alterna cambiando la información: la imagen y la información indicando la coincidencia
+var i;
+var k;
+var contieneinfo;
+var contieneimg;
+var dl = baraja.length
+var nt;
+	for (nt=0;nt<3*dl;nt++) {  //hacer el intercambio 3 veces baraja.length
+	  i = Math.floor(Math.random()*dl);
+	  k = Math.floor(Math.random()*dl);
+	  contieneinfo = baraja[i].info;
+	  contieneimg = baraja[i].img;
+	  baraja[i].info = baraja[k].info;
+	  baraja[i].img = baraja[k].img;
+	  baraja[k].info = contieneinfo;
+	  baraja[k].img = contieneimg;
+	}
+}
+
+
+function dibujardorso() {
+	 ctx.fillStyle = colordorso;
+	ctx.fillRect(this.sx,this.sy,this.sancho,this.salto);
+	
+	ctx.strokeRect(this.sx,this.sy,this.sancho+2,this.salto+2);
+	ctx.lineWidth = 4;
+	ctx.strokeStyle="#fff";
+	ctx.lineJoin = "round";		
+
+ 
+		
+}
+
+
+
+function elegir(ev) {
+	
+	
+	var out;
+	var mx;
+	var my;
+	var eleccion1;
+	var eleccion2;
+	if ( ev.layerX ||  ev.layerX == 0) { // Firefox
+   			mx= ev.layerX;
+    		my = ev.layerY;
+  		} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+    		mx = ev.offsetX;
+    		my = ev.offsetY;
+  		}
+	var i;
+	
+	
+
+		
+	for (i=0;i<baraja.length;i++){
+		var carta = baraja[i];
+		if (carta.sx >=0)  //este es el modo de evitar chequear para pulsar en este espacio
+		if ((mx>carta.sx)&&(mx<carta.sx+carta.sancho)&&(my>carta.sy)&&(my<carta.sy+carta.salto)) {
+			//comprobar que no está pulsando en la primera carta
+			if ((primeracoincidencia)|| (i!=primeracarta)) {
+				break;}
+		}
+	}
+	
+	
+	if (i<baraja.length) {  //pulsado en una carta
+		if (primeracoincidencia) {
+			primeracarta = i;
+			primeracoincidencia = false;
+			
+			ctx.drawImage(carta.img,carta.sx,carta.sy,carta.sancho,carta.salto); 
+			
+  			
+			
+		}
+		else {
+			segundacarta = i;
+			ctx.drawImage(carta.img,carta.sx,carta.sy,carta.sancho,carta.salto); 
+		  	
+			if (carta.info==baraja[primeracarta].info) {
+				coincide = true;
+				contador++;
+				ctx.fillStyle="wheat";
+				ctx.fillRect(210,450,680,100);
+				ctx.fillStyle=colordorso;
+				ctx.fillText("Numero de coincidencias hasta ahora: "+String(contador),50,270);
+			
+				
+				
+				if (contador>= .5*baraja.length) {
+					
+					var nuevo = new Date();
+					var nt = Number(nuevo.getTime());
+					var segundos = Math.floor(.5+(nt-tiempoinicio)/1000);
+					
+					
+					
+					ctx.fillStyle= "Goldenrod";
+					ctx.fillRect(0,0,650,300);
+					ctx.lineJoin="round";
+					ctx.fillStyle=colordorso;
+					out = "Has finalizado en "+String(segundos)+ " segs.";
+					ctx.fillText(out,40,100);
+					ctx.fillText("Recarga la página para probar de nuevo.",40,200);
+					return;
+					
+					
+				}
+				
+			}
+			else {
+				coincide = false;
+			}
+			primeracoincidencia = true;
+			tid = setTimeout(flipback,700);
+			
+			}
+		
+	}
+
+
+
+}
+
+function flipback() {
+	var carta;
+	if (!coincide) {
+	baraja[primeracarta].dibujar();
+	baraja[segundacarta].dibujar();
+	}
+	else {
+		ctx.fillStyle = colormesa;
+				ctx.fillRect(baraja[segundacarta].sx,baraja[segundacarta].sy,baraja[segundacarta].sancho,baraja[segundacarta].salto);
+				ctx.fillRect(baraja[primeracarta].sx,baraja[primeracarta].sy,baraja[primeracarta].sancho,baraja[primeracarta].salto);
+				baraja[segundacarta].sx = -1;
+				baraja[primeracarta].sx = -1;
+	}
+}
+
+
+function init(){
+   ctx = document.getElementById('canvas').getContext('2d'); 
+   canvas1 = document.getElementById('canvas');
+ 
+   canvas1.addEventListener('click',elegir,false);
+   hacerbaraja();
+   barajar();
+   ctx.font="bold 13pt sans-serif" ;
+   ctx.fillText("Pulsa sobre dos cartas para descubrir las 8 parejas de",100,13);
+   ctx.fillText("Billetes Hondureños",240,30);
+   ctx.fillText("Numero de coincidencias hasta ahora: "+String(contador),50,270);
+
+	tiempoinicio = new Date();
+   	tiempoinicio = Number(tiempoinicio.getTime());
+   
+   
+   
+  }
+  
+ 
+
+
+	$(document).ready(function(){
+		
+		$("#formLeft .input-bg").hover(function() {
+			$(this).addClass("active");
+		}, function() {
+			$(this).removeClass("active");
+		});
+		
+		$("#formLeft input").focus(function() {
+			$(this).parent().addClass("active");
+		});
+		$("#formLeft input").blur(function() {
+			$("#formLeft .input-bg").removeClass("active");
+		});
+		
+		$("#formRight .message-bg").hover(function() {
+			$(this).addClass("active");
+		}, function() {
+			$(this).removeClass("active");
+		});
+		
+		$("#formRight textarea").focus(function() {
+			$(this).parent().addClass("active");
+		});
+		$("#formRight textarea").blur(function() {
+			$("#formRight .message-bg").removeClass("active");
+		});
+		
+		$("#commentForm").validate();
+	});
+	</script>
+	 <link type="image/x-icon" href="images/favicon.ico" rel="icon" />
+ <link type="image/x-icon" href="images/favicon.ico" rel="shortcut icon" />
+</head>
+
+<body onLoad="init();">
+<p align ="center"><img src="images/title.png"></p>
+	<div id="page-wrap">
+	
+		<form method="post" action="contactengine.php" id="commentForm">
+			<fieldset  valign="center">
+			<p><canvas id="canvas" width="650" height="300" style="background:#ccc">
+Canvas not supported by your browser.
+</canvas></p>
+			</fieldset>
+		</form>
+	
+	</div>
+	
+	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+	</script>
+	<script type="text/javascript">
+	_uacct = "UA-68528-29";
+	urchinTracker();
+	</script>
+
+</body>
+
+</html>
